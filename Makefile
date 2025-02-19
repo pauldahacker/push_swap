@@ -10,65 +10,89 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME    = push_swap
-BONUS	= checker
-
+# COLORS
 BLUE 	= \033[0;34m
 GREEN 	= \033[0;32m
-RED 	= \033[0;31m
-ORANGE	= \033[38;5;209m
 YELLOW	= \033[0;93m
 BROWN 	= \033[38;2;184;143;29m
 RESET 	= \033[0m
 
-SRCS    = swap.c push.c rotate.c rrotate.c stack_utils.c stack.c \
-		  small_sort.c mutual_sort_utils.c mutual_sort.c push_swap.c ft.c \
+# COMPILATION
+NAME    	= push_swap
+BONUS_NAME	= checker
+CC      	= gcc
+CFLAGS  	= -Wall -Wextra -Werror
+RM      	= rm -rf
 
-BONUS_SRCS	= get_next_line.c get_next_line_utils.c stack_bonus.c ft_bonus.c \
-			stack_utils_bonus.c swap_bonus.c push_bonus.c rotate_bonus.c \
-			rrotate_bonus.c checker_utils.c checker.c
+# DIRECTORIES
+SRCS_DIR  = srcs/
+OBJS_DIR  = objs/
+INCLUDE_DIR = headers/
 
-HEADER  = push_swap.h
-BONUS_HEADER = checker.h
+# FILES
+LIBFT_FILES = ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c ft_isprint.c \
+			  ft_strlen.c ft_memset.c ft_bzero.c ft_memcpy.c ft_memmove.c \
+			  ft_strlcpy.c ft_strlcat.c ft_toupper.c ft_tolower.c ft_strchr.c \
+			  ft_strrchr.c ft_strncmp.c ft_memchr.c ft_memcmp.c ft_strnstr.c \
+			  ft_atoi.c ft_calloc.c ft_strdup.c ft_substr.c ft_strjoin.c \
+			  ft_strtrim.c ft_split.c ft_itoa.c ft_strmapi.c ft_striteri.c \
+			  ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c
 
-CC      = gcc
-CFLAGS  = -Wall -Wextra -Werror
-RM      = rm -rf
+SRCS_FILES = swap.c push.c rotate.c rrotate.c stack_utils.c stack.c \
+			 small_sort.c mutual_sort_utils.c mutual_sort.c push_swap.c
 
-%.o:    %.c
-	@echo "$(BROWN)Compiling   ${BLUE}→   $(YELLOW)$< $(RESET)"
-	@${CC} ${CFLAGS} -c -o $@ $<
+BONUS_SRCS_FILES = get_next_line.c get_next_line_utils.c stack_bonus.c \
+				   stack_utils_bonus.c swap_bonus.c push_bonus.c rotate_bonus.c \
+				   rrotate_bonus.c checker_utils.c checker.c
 
-OBJS    = ${SRCS:.c=.o}
-BONUS_OBJS	= ${BONUS_SRCS:.c=.o}
-DEPS = $(addsuffix .d, $(basename $(SRCS)))
-DEPS2 = $(addsuffix .d, $(basename $(BONUS_SRCS)))
+# PATHS
+HEADERS	= $(INCLUDE_DIR)push_swap.h
+BONUS_HEADERS	= $(INCLUDE_DIR)checker.h
+SRCS       = $(addprefix $(SRCS_DIR), $(SRCS_FILES))
+BONUS_SRCS = $(addprefix $(SRCS_DIR), $(BONUS_SRCS_FILES))
+OBJS       = $(patsubst $(SRCS_DIR)%.c, $(OBJS_DIR)%.o, $(SRCS))
+BONUS_OBJS = $(patsubst $(SRCS_DIR)%.c, $(OBJS_DIR)%.o, $(BONUS_SRCS))
 
-all: ${NAME}
+# LIBFT
+LIBFT_DIR  = libft/
+LIBFT      = $(LIBFT_DIR)libft.a
+LIBFT_SRCS = $(addprefix $(LIBFT_DIR), $(LIBFT_FILES))
 
--include ${DEPS}
-${NAME}:	$(OBJS) $(HEADER)
-	@${CC} ${SRCS} -o ${NAME}
+# RULES
+all: $(NAME)
+
+$(NAME): $(LIBFT) $(OBJS) $(HEADERS)
+	@$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME)
 	@echo "\n$(GREEN)Created $(NAME) ✓ $(RESET)\n"
 
--include ${DEPS2}
-bonus:	$(BONUS_OBJS) $(BONUS_HEADER)
-	@touch $@
-	@${CC} ${BONUS_SRCS} -o ${BONUS}
-	@echo "\n$(GREEN)Created ${BONUS} ✓$(RESET)\n"
+# OBJECT FILE COMPILATION
+$(OBJS_DIR)%.o: $(SRCS_DIR)%.c Makefile
+	@mkdir -p $(OBJS_DIR)
+	@echo "$(BROWN)Compiling ${BLUE}→ $(YELLOW)$< $(RESET)"
+	@$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
+
+$(LIBFT): $(LIBFT_SRCS)
+	@$(MAKE) -s -C $(LIBFT_DIR)
+
+bonus: $(BONUS_NAME)
+
+$(BONUS_NAME): $(LIBFT) $(BONUS_OBJS) $(BONUS_HEADERS)
+	@$(CC) $(CFLAGS) $(BONUS_OBJS) -L$(LIBFT_DIR) -lft -o $(BONUS_NAME)
+	@echo "\n$(GREEN)Created $(BONUS_NAME) ✓$(RESET)\n"
 
 clean:
-	${RM} ${OBJS} ${BONUS_OBJS}
-	${RM} ${DEPS} ${DEPS2}
-	@echo "\n${GREEN}Objects cleaned successfully $(RESET)\n"
+	@echo "$(YELLOW)Cleaning $(LIBFT_DIR) object files...$(RESET)"
+	@$(MAKE) clean -C $(LIBFT_DIR)
+	@echo "$(YELLOW)Cleaning $(NAME) object files...$(RESET)"
+	@$(RM) $(OBJS_DIR)
+	@echo "$(GREEN)Object files cleaned successfully ✓ $(RESET)\n"
 
-fclean:
-	@${RM} ${OBJS} ${BONUS_OBJS}
-	@${RM} ${DEPS} ${DEPS2}
-	@${RM} bonus
-	@${RM} ${NAME} ${BONUS}
-	@echo "\n${GREEN}Objects and executables cleaned successfully $(RESET)\n"
+fclean: clean
+	@echo "$(YELLOW)Cleaning executables...$(RESET)"
+	@$(MAKE) fclean -C $(LIBFT_DIR)
+	@$(RM) $(NAME) $(BONUS_NAME)
+	@echo "$(GREEN)Executables cleaned successfully ✓ $(RESET)\n"
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus
