@@ -12,98 +12,141 @@
 
 #include "push_swap.h"
 
-void	split_a(t_stack *a, t_stack *b, int len)
+void	print_stack(t_stack *a)
+{
+	int	i;
+
+	i = 0;
+	printf("------\n");
+	while (i < a->len)
+		printf("[ %d ]\n", a->content[i++]);
+	printf("------\n");
+}
+
+/*
+Finds the pivot (p) for either A or B, ranging from position 0 to len.
+For A,	p = number in A such that len / 2 numbers are less than or equal to p.
+For B,	p = number in B such that len / 2 numbers are less than p.
+*/
+int	find_pivot(t_stack *stack, int len, int a_or_b)
+{
+	int	i;
+	int	j;
+	int	count;
+
+	i = -1;
+	while (++i < len)
+	{
+		count = 0;
+		j = -1;
+		while (++j < len)
+		{
+			if (a_or_b == STACK_A && stack->content[j] <= stack->content[i])
+				++count;
+			if (a_or_b == STACK_B && stack->content[j] >= stack->content[i])
+				++count;
+		}
+		if (count == len / 2)
+			break ;
+	}
+	return (stack->content[i]);
+}
+
+static void	split_a(t_stack *a, t_stack *b, int len)
 {
 	int	startlen;
-	int	first;
-	int	median;
+	int	n_rotates;
+	int	pivot;
 
-	startlen = a->len;
-	median = find_pivot_a(a, len);
-	first = -1;
-	while (a->content[++first] <= median)
-		;
-	first = a->content[first];
-	while (startlen - a->len <= len / 2 - !(len % 2))
-	{
-		if (b->content[0] == median && a->content[0] > median)
-			rab(a, b);
-		if (b->content[0] == median && b->len > 1)
-			rb(b);
-		else if (a->content[0] <= median)
-			pb(b, a);
-		else
-			ra(a);
-	}
-	put_on_top(first, a, median, b);
+    startlen = a->len;
+    pivot = find_pivot(a, len, STACK_A);
+    n_rotates = 0;
+    while (startlen - a->len < len / 2)
+    {
+        if (b->content[0] == pivot && b->len > 1)
+            rb(b);
+        if (a->content[0] > pivot)
+        {
+            if (b->content[0] == pivot)
+                n_rotates += rab(a, b);
+            else
+                n_rotates += ra(a);
+        }
+        else
+            pb(b, a);
+    }
+    put_on_top_a(n_rotates, pivot, a, b);
 }
 
-void	split_b(t_stack *b, t_stack *a, int len)
+static void	split_b(t_stack *a, t_stack *b, int len)
 {
-	int	startlen;
-	int	first;
-	int	median;
+    int	startlen;
+    int	n_rotates;
+    int	pivot;
 
-	startlen = b->len;
-	median = find_pivot_b(b, len);
-	first = -1;
-	while (b->content[++first] >= median)
-		;
-	first = b->content[first];
-	while (startlen - b->len <= len / 2 - !(len % 2))
-	{
-		if (a->content[0] == median && b->content[0] < median)
-			rab(a, b);
-		if (a->content[0] == median && a->len > 1)
-			ra(a);
-		else if (b->content[0] >= median)
-			pa(a, b);
-		else
-			rb(b);
-	}
-	put_on_top(median, a, first, b);
+    startlen = b->len;
+    pivot = find_pivot(b, len, STACK_B);
+    n_rotates = 0;
+    while (startlen - b->len < len / 2)
+    {
+        if (a->content[0] == pivot && a->len > 1)
+            ra(a);
+        if (b->content[0] < pivot)
+        {
+            if (a->content[0] == pivot)
+                n_rotates += rab(b, a);
+            else
+                n_rotates += rb(b);
+        }
+        else
+            pa(a, b);
+    }
+    put_on_top_b(n_rotates, pivot, a, b);
 }
 
-void	mutual_sort_a(t_stack *a, t_stack *b, int len)
+void    mutual_sort_a(t_stack *a, t_stack *b, int len)
 {
-	if (a->len <= 5)
-		push_swap_5(a);
-	if (is_correct(a, a->len) && is_reverse_sorted(b, b->len))
-	{
-		while (b->len)
-			pa(a, b);
-		return ;
-	}
-	if (len <= 2 || is_correct(a, len))
-	{
-		if (len == 2 && a->content[0] > a->content[1])
-			sa(a);
-		return ;
-	}
-	split_a(a, b, len);
-	mutual_sort_a(a, b, len / 2);
-	mutual_sort_b(b, a, len / 2 + len % 2);
+	if (a->len == len)
+		a->is_segmented = FALSE;
+	else
+		a->is_segmented = TRUE;
+    if (a->len <= 5)
+        return (push_swap_5a(a, b));
+    if (is_correct(a, a->len, STACK_A) && is_correct(b, b->len, STACK_B))
+    {
+        while (b->len)
+            pa(a, b);
+        return ;
+    }
+    if (len <= 2 || is_correct(a, len, STACK_A))
+        return try_ss(a, b);
+    split_a(a, b, len);
+    mutual_sort_a(a, b, len - len / 2);
+    mutual_sort_b(b, a, len / 2);
 }
 
-void	mutual_sort_b(t_stack *b, t_stack *a, int len)
+void    mutual_sort_b(t_stack *b, t_stack *a, int len)
 {
-	if (b->len <= 3)
-		push_swap_3b(b);
-	if (is_correct(a, a->len) && is_reverse_sorted(b, b->len))
-	{
-		while (b->len)
-			pa(a, b);
-		return ;
-	}
-	if (len <= 2 || is_reverse_sorted(b, len))
-	{
-		if (len == 2 && b->content[0] < b->content[1])
-			sb(b);
-		while (--len >= 0)
-			pa(a, b);
-		return ;
-	}
-	split_b(b, a, len);
-	mutual_sort_a(a, b, len / 2 + len % 2);
-	mutual_sort_b(b, a, len / 2);
+	if (b->len == len)
+		b->is_segmented = FALSE;
+	else
+		b->is_segmented = TRUE;
+    if (b->len <= 5)
+        return (push_swap_5b(a, b));
+    if (is_correct(a, a->len, STACK_A) && is_correct(b, b->len, STACK_B))
+    {
+        while (b->len)
+            pa(a, b);
+        return ;
+    }
+    if (len <= 2 || is_correct(b, len, STACK_B))
+    {
+        try_ss(a, b);
+        while (--len >= 0)
+            pa(a, b);
+        return ;
+    }
+    split_b(a, b, len);
+    mutual_sort_a(a, b, len / 2);
+    mutual_sort_b(b, a, len - len / 2);
 }

@@ -12,7 +12,7 @@
 
 #include "checker.h"
 
-void	apply_instructions(t_stack *a, t_stack *b)
+static void	apply_instructions(t_stack *a, t_stack *b)
 {
 	char	*line;
 
@@ -27,29 +27,21 @@ void	apply_instructions(t_stack *a, t_stack *b)
 		apply_s(a, b, line);
 	else
 	{
-		free(line);
-		write(2, "Error\n", 6);
 		destroy_stack(&a);
 		destroy_stack(&b);
-		exit(1);
+		handle_error(NULL);
 	}
 	free(line);
 	apply_instructions(a, b);
 }
 
-void    checker(t_stack *a)
+static void    checker(t_stack *a)
 {
     t_stack	*b;
 
-    b = create_stack(0, 0);
-    if (!b)
-    {
-		write(2, "Error\n", 6);
-		destroy_stack(&a);
-		exit(1);
-	}
+    b = init_stack(a->len, 0);
     apply_instructions(a, b);
-    if (is_correct(a, a->len))
+    if (is_correct(a, a->len, STACK_A))
 		write(1, "OK\n", 3);
 	else
 		write(1, "KO\n", 3);
@@ -63,17 +55,6 @@ int	main(int argc, char *argv[])
 	if (!argc || argc == 1)
 		return (0);
 	a = create_stack(argc - 1, argv + 1);
-	if (!a)
-	{
-		write(2, "Error\n", 6);
-		exit(1);
-	}
-	if (has_repeats(a))
-	{
-		write(2, "Error\n", 6);
-		destroy_stack(&a);
-		exit(1);
-	}
 	checker(a);
 	destroy_stack(&a);
 	return (0);

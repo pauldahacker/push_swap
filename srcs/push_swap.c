@@ -12,15 +12,15 @@
 
 #include "push_swap.h"
 
-void	push_swap(t_stack *a)
+static void	push_swap(t_stack *a)
 {
 	t_stack	*b;
 
 	if (!a || !(a->len) || a->len == 1)
 		return ;
-	b = create_stack(0, NULL);
+	b = init_stack(a->len, 0);
 	if (!b)
-		return ;
+		handle_error(a);
 	mutual_sort_a(a, b, a->len);
 	destroy_stack(&b);
 }
@@ -32,17 +32,6 @@ int	main(int argc, char *argv[])
 	if (!argc || argc == 1)
 		return (0);
 	a = create_stack(argc - 1, argv + 1);
-	if (!a)
-	{
-		write(2, "Error\n", 6);
-		exit(1);
-	}
-	if (has_repeats(a))
-	{
-		write(2, "Error\n", 6);
-		destroy_stack(&a);
-		exit(1);
-	}
 	push_swap(a);
 	destroy_stack(&a);
 	return (0);

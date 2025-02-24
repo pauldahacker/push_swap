@@ -41,3 +41,20 @@ void	ss(t_stack *a, t_stack *b)
 	s(a);
 	s(b);
 }
+
+/*
+Checks if "ss" should be executed, and executes it if it's a clever move.
+If it shouldn't, it will check the same for sa(a) and sb(b).
+If swapping shouldn't be done, it does nothing.
+*/
+void	try_ss(t_stack *a, t_stack *b)
+{
+	if (a->len >= 2 && a->content[0] > a->content[1]
+		&& b->len >= 2 && b->content[0] < b->content[1])
+		ss(a, b);
+	else if (a->len >= 2 && a->content[0] > a->content[1])
+		sa(a);
+	else if (b->len >= 2 && b->content[0] < b->content[1])
+		sb(b);
+	return ;
+}

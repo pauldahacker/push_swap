@@ -12,33 +12,50 @@
 
 #include "push_swap.h"
 
+void	*destroy_stack(t_stack **stack)
+{
+	if ((*stack)->content)
+		free((*stack)->content);
+	free(*stack);
+	*stack = NULL;
+	return (NULL);
+}
+
+void	handle_error(t_stack *stack)
+{
+	if (stack)
+		destroy_stack(&stack);
+	write(STDERR_FILENO, "Error\n", 6);
+	exit(EXIT_FAILURE);
+}
+
 int	is_number(char *str)
 {
 	long	num;
 	int		sign;
 
 	sign = 1;
+	num = 0;
 	if (!str)
 		return (0);
 	if (*str == '-' || *str == '+')
 	{
-		sign -= (*str == '-') * 2;
+		if (*str == '-')
+			sign = -1;
 		++str;
 	}
-	if (*str && *str >= '0' && *str <= '9')
-		num = *(str++) - '0';
+	if (!*str || *str < '0' || *str > '9')
+		return (0);
+	while (*str && *str == '0')
+		++str;
 	while (*str)
 	{
-		if (*str >= '0' && *str <= '9' && ((sign == 1 && num < INT_MAX)
-				|| (sign == -1 && num < (long)INT_MAX + 1)))
-		{
-			num = num * 10 + *str - '0';
-			++str;
-		}
-		else
+		if (*str < '0' || *str > '9')
 			return (0);
+		num = num * 10 + (*str - '0');
+		++str;
 	}
-	return (num * sign <= (long)INT_MAX && num * sign >= (long)INT_MIN);
+	return (!*str && num * sign >= INT_MIN && num * sign <= INT_MAX);
 }
 
 int	has_repeats(t_stack *stack)
@@ -62,15 +79,15 @@ int	has_repeats(t_stack *stack)
 	return (0);
 }
 
-int	help_create(char *numbers, t_stack *new_stack)
+void	help_create(char *numbers, t_stack *new_stack)
 {
 	int		i;
 	int		j;
 	char	**split;
 
 	split = ft_split(numbers, ' ');
-	if (!split)
-		return (0);
+	if (!split || !split[0])
+		handle_error(new_stack);
 	i = 0;
 	j = -1;
 	while (split[i])
@@ -80,7 +97,7 @@ int	help_create(char *numbers, t_stack *new_stack)
 			while (split[++j])
 				free(split[j]);
 			free(split);
-			return (0);
+			handle_error(new_stack);
 		}
 		new_stack->content[i] = ft_atoi(split[i]);
 		++i;
@@ -88,41 +105,5 @@ int	help_create(char *numbers, t_stack *new_stack)
 	while (split[++j])
 		free(split[j]);
 	free(split);
-	return (i);
-}
-
-t_stack	*create_stack(int len, char *numbers[])
-{
-	int		i;
-	t_stack	*new_stack;
-
-	new_stack = malloc(sizeof(t_stack));
-	if (!new_stack)
-		return (NULL);
-	if (len == 1)
-	{
-		len = help_create(numbers[0], new_stack);
-		if (!len)
-			return (destroy_stack(&new_stack));
-	}
-	else
-	{
-		i = 0;
-		while (numbers && *(numbers + i))
-		{
-			if (!is_number(numbers[i]))
-				return (destroy_stack(&new_stack));
-			new_stack->content[i] = ft_atoi(numbers[i]);
-			++i;
-		}
-	}
-	new_stack->len = len;
-	return (new_stack);
-}
-
-void	*destroy_stack(t_stack **stack)
-{
-	free((*stack)->content);
-	*stack = NULL;
-	return (NULL);
+	new_stack->len = i;
 }

@@ -44,11 +44,11 @@ all:		$(NAME)
 
 $(NAME):	$(OBJ) $(HEADER)
 		@$(LIB) $(NAME) $(OBJ)
-		@echo "\n$(GREEN)libft compiled succesfully ✓$(DEF_COLOR)\n"
+		@echo "$(GREEN)libft compiled succesfully ✓$(DEF_COLOR)\n"
 
 bonus:		$(OBJ) $(BONUS_OBJ) $(HEADER)
 		@$(LIB) $(NAME) $(OBJ) $(BONUS_OBJ)
-		@echo "\n$(GREEN)libft compiled succesfully ✓$(DEF_COLOR)\n"
+		@echo "$(GREEN)libft compiled succesfully ✓$(DEF_COLOR)\n"
 
 %.o:		%.c $(HEADER) Makefile
 		@echo "$(BROWN)Compiling   ${BLUE}→   $(ORANGE)$< $(DEF_COLOR)"

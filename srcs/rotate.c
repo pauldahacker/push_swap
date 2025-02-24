@@ -12,35 +12,48 @@
 
 #include "push_swap.h"
 
-void	r(t_stack *stack)
+/*
+rotates return (1) or (0) to keep track of how many elements we rotate.
+The rotate count should increase by 1 if and only if:
+	- the stack exists and is not empty;
+	- the stack is segmented
+*/
+
+int	r(t_stack *stack)
 {
 	int	temp;
 	int	i;
 
 	if (!stack || !stack->len)
-		return ;
+		return (0);
 	temp = stack->content[0];
 	i = 0;
 	while (++i < stack->len)
 		stack->content[i - 1] = stack->content[i];
 	stack->content[i - 1] = temp;
+	if (stack->is_segmented)
+		return (1);
+	return (0);
 }
 
-void	ra(t_stack *a)
+int	ra(t_stack *a)
 {
 	write(1, "ra\n", 3);
-	r(a);
+	return (r(a));
 }
 
-void	rb(t_stack *b)
+int	rb(t_stack *b)
 {
 	write(1, "rb\n", 3);
-	r(b);
+	return (r(b));
 }
 
-void	rab(t_stack *a, t_stack *b)
+/*
+Rotates both stacks but will return the result of performing r(stack1).
+*/
+int	rab(t_stack *stack1, t_stack *stack2)
 {
 	write(1, "rr\n", 3);
-	r(a);
-	r(b);
+	r(stack2);
+	return (r(stack1));
 }

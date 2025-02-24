@@ -12,75 +12,119 @@
 
 #include "push_swap.h"
 
-void	push_swap_3a(t_stack *a)
+void	push_swap_3a(int len, int is_segmented, t_stack *a, t_stack *b)
 {
-	int	second;
-	int	third;
+	int	n_rotates;
 
-	if (a->len < 2 || is_correct(a, a->len))
+	if (len == 2 && !is_correct(a, len, STACK_A))
+		s(a);
+	if (is_correct(a, len, STACK_A))
 		return ;
-	if (a->len == 2)
+	if (is_segmented)
 	{
-		if (a->content[0] > a->content[1])
-			sa(a);
-		return ;
+		n_rotates = -1;
+		while (a->content[0] != lowest(a, len - ++n_rotates))
+			ra(a);
+		pb(b, a);
+		while (--n_rotates >= 0)
+			rra(a);
+		try_ss(a, b);
+		return (pa(a, b));
 	}
-	second = a->content[1];
-	third = a->content[2];
-	if (second == highest(a) || (third != highest(a) && third != lowest(a)))
+	else if (a->content[1] == highest(a, 3)
+		|| (a->content[2] != highest(a, 3) && a->content[2] != lowest(a, 3)))
 	{
 		rra(a);
-		push_swap_3a(a);
+		push_swap_3a(len, is_segmented, a, b);
 		return ;
 	}
-	sa(a);
-	push_swap_3a(a);
+	try_ss(a, b);
+	push_swap_3a(len, is_segmented, a, b);
 }
 
-void	push_swap_3b(t_stack *b)
+void	push_swap_3b(int len, int is_segmented, t_stack *a, t_stack *b)
 {
-	int	second;
-	int	third;
+	int	n_pushes;
 
-	second = b->content[1];
-	third = b->content[2];
-	if (is_reverse_sorted(b, b->len))
+	if (len == 2 && !is_correct(b, len, STACK_B))
+		sb(b);
+	if (is_correct(b, len, STACK_B))
+	{
+		while (len-- > 0)
+			pa(a, b);
 		return ;
-	if (second == lowest(b) || (third != lowest(b) && third != highest(b)))
+	}
+	else if (is_segmented)
+	{
+		n_pushes = -1;
+		while (b->content[0] > lowest(b, len - ++n_pushes))
+			pa(a, b);
+		if (n_pushes < 2)
+			rb(b);
+		while (n_pushes++ < 2)
+			pa(a, b);
+		if (b->content[0] != lowest(b, len))
+			rrb(b);
+		try_ss(a, b);
+		return (pa(a, b));
+	}
+	if (b->content[1] == lowest(b, 3)
+		|| (b->content[2] != lowest(b, 3) && b->content[2] != highest(b, 3)))
 	{
 		rrb(b);
-		push_swap_3b(b);
+		push_swap_3b(len, is_segmented, a, b);
 		return ;
 	}
-	sb(b);
-	push_swap_3b(b);
+	try_ss(a, b);
+	push_swap_3b(len, is_segmented, a, b);
 }
 
-void	push_swap_5(t_stack *a)
+void	push_swap_5a(t_stack *a, t_stack *b)
 {
-	t_stack	*b;
-	int		pos;
+	int	pivot;
+	int	n_pushes;
 
-	if (is_correct(a, a->len))
-		return ;
-	b = create_stack(0, NULL);
-	if (!b)
-		return ;
-	pos = find_pos(lowest(a), a);
-	while (a->len > 3 && !is_correct(a, a->len))
+	n_pushes = 0;
+	try_ss(a, b);
+	while (a->len > 3 && !is_correct(a, a->len, STACK_A))
 	{
-		while (a->content[0] != lowest(a))
+		if (a->len == 4)
+			pivot = lowest(a, a->len);
+		else
+			pivot = find_pivot(a, a->len, STACK_A);
+		if (a->content[0] > pivot)
+			rotate_a(pivot, 0, a);
+		else
 		{
-			if (pos > a->len / 2)
-				rra(a);
-			else
-				ra(a);
+			pb(b, a);
+			++n_pushes;
 		}
-		pb(b, a);
 	}
-	if (a->len == 3)
-		push_swap_3a(a);
+	push_swap_3a(a->len, 0, a, b);
+	while (--n_pushes >= 0)
+		pa(a, b);
+	try_ss(a, b);
+}
+
+void	push_swap_5b(t_stack *a, t_stack *b)
+{
+	int	pivot;
+
+	try_ss(a, b);
+	while (b->len > 3 && !is_correct(b, b->len, STACK_B))
+	{
+		if (b->len == 4)
+			pivot = highest(b, b->len);
+		else
+			pivot = find_pivot(b, b->len, STACK_B);
+		if (b->content[0] < pivot)
+			rotate_b(pivot, 0, b);
+		else
+			pa(a, b);
+	}
+	try_ss(a, b);
+	push_swap_3b(b->len, 0, a, b);
 	while (b->len)
 		pa(a, b);
-	destroy_stack(&b);
+	try_ss(a, b);
 }

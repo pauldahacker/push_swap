@@ -12,13 +12,6 @@
 
 #include "checker.h"
 
-size_t	ft_strlen(const char *s)
-{
-	if (!*s)
-		return (0);
-	return (1 + ft_strlen(s + 1));
-}
-
 char	*tochr(char *s, int c)
 {
 	char	*ret;
@@ -47,67 +40,71 @@ char	*tochr(char *s, int c)
 	return (ret);
 }
 
-char	*ft_strdup(const char *s1)
+char	*getbufferline(char *s)
 {
-	char	*d;
-	char	*p_s1;
-	size_t	i;
-
-	p_s1 = (char *)s1;
-	i = 0;
-	d = (char *)malloc(ft_strlen(p_s1) + 1);
-	if (d == NULL)
-		return (NULL);
-	while (p_s1[i] != '\0')
-	{
-		d[i] = p_s1[i];
-		i++;
-	}
-	d[i] = '\0';
-	return (d);
-}
-
-char	*ft_strjoin(char *s1, char *s2)
-{
-	char	*str;
-	int		a;
-	int		b;
+	char	*ret;
 	int		i;
 
-	if (!s1 || !s2)
+	if (!s)
 		return (NULL);
-	a = ft_strlen(s1);
-	b = ft_strlen(s2);
 	i = 0;
-	str = malloc((a + b + 1) * sizeof(char));
-	if (!str)
-		return (destroy(&s1));
-	while (a--)
+	while (s[i])
 	{
-		str[i] = s1[i];
-		i++;
+		if (s[i++] == NEWLINE)
+			break ;
 	}
-	a = i;
-	i = 0;
-	while (b--)
-		str[a++] = s2[i++];
-	str[a] = '\0';
-	destroy(&s1);
-	return (str);
+	ret = malloc((i + 1) * sizeof(char));
+	if (!ret)
+		return (NULL);
+	ret[i] = 0;
+	while (--i >= 0)
+		ret[i] = s[i];
+	return (ret);
 }
 
-char	*ft_strchr(const char *str, int c)
+int	myread(int fd, char *buf)
 {
-	int	i;
+	int	readbytes;
 
-	i = 0;
-	while (((char *)str)[i] != '\0')
-	{
-		if (((char *)str)[i] == c)
-			return ((char *)&str[i]);
-		i++;
-	}
-	if (c == '\0')
-		return ((char *)&str[i]);
+	if (!buf)
+		return (-1);
+	readbytes = read(fd, buf, BUFFER_SIZE);
+	if (readbytes >= 0)
+		buf[readbytes] = 0;
+	return (readbytes);
+}
+
+char	*destroy(char **s)
+{
+	free(*s);
+	*s = NULL;
 	return (NULL);
+}
+
+char	*assemble(int fd, char *buf, int readbytes)
+{
+	char	*current;
+	char	*joined;
+
+	current = getbufferline(buf);
+	if (!current)
+		return (NULL);
+	joined = ft_strdup(current);
+	if (!joined)
+		return (destroy(&current));
+	while (!ft_strchr(joined, NEWLINE) && readbytes)
+	{
+		destroy(&current);
+		readbytes = myread(fd, buf);
+		if (readbytes == -1)
+			return (destroy(&joined));
+		current = getbufferline(buf);
+		if (!current)
+			return (destroy(&joined));
+		joined = ft_strjoin(joined, current);
+		if (!joined)
+			return (destroy(&current));
+	}
+	destroy(&current);
+	return (joined);
 }
