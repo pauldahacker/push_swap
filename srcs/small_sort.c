@@ -12,7 +12,7 @@
 
 #include "push_swap.h"
 
-void	push_swap_3a(int len, int is_segmented, t_stack *a, t_stack *b)
+void	push_swap_3a(int len, t_stack *a, t_stack *b)
 {
 	int	n_rotates;
 
@@ -20,7 +20,7 @@ void	push_swap_3a(int len, int is_segmented, t_stack *a, t_stack *b)
 		s(a);
 	if (is_correct(a, len, STACK_A))
 		return ;
-	if (is_segmented)
+	if (a->is_segmented)
 	{
 		n_rotates = -1;
 		while (a->content[0] != lowest(a, len - ++n_rotates))
@@ -35,14 +35,14 @@ void	push_swap_3a(int len, int is_segmented, t_stack *a, t_stack *b)
 		|| (a->content[2] != highest(a, 3) && a->content[2] != lowest(a, 3)))
 	{
 		rra(a);
-		push_swap_3a(len, is_segmented, a, b);
+		push_swap_3a(len, a, b);
 		return ;
 	}
 	try_ss(a, b);
-	push_swap_3a(len, is_segmented, a, b);
+	push_swap_3a(len, a, b);
 }
 
-void	push_swap_3b(int len, int is_segmented, t_stack *a, t_stack *b)
+void	push_swap_3b(int len, t_stack *a, t_stack *b)
 {
 	int	n_pushes;
 
@@ -54,7 +54,7 @@ void	push_swap_3b(int len, int is_segmented, t_stack *a, t_stack *b)
 			pa(a, b);
 		return ;
 	}
-	else if (is_segmented)
+	else if (b->is_segmented)
 	{
 		n_pushes = -1;
 		while (b->content[0] > lowest(b, len - ++n_pushes))
@@ -72,16 +72,15 @@ void	push_swap_3b(int len, int is_segmented, t_stack *a, t_stack *b)
 		|| (b->content[2] != lowest(b, 3) && b->content[2] != highest(b, 3)))
 	{
 		rrb(b);
-		push_swap_3b(len, is_segmented, a, b);
+		push_swap_3b(len, a, b);
 		return ;
 	}
 	try_ss(a, b);
-	push_swap_3b(len, is_segmented, a, b);
+	push_swap_3b(len, a, b);
 }
 
 void	push_swap_5a(t_stack *a, t_stack *b)
 {
-	int	pivot;
 	int	n_pushes;
 
 	n_pushes = 0;
@@ -89,18 +88,16 @@ void	push_swap_5a(t_stack *a, t_stack *b)
 	while (a->len > 3 && !is_correct(a, a->len, STACK_A))
 	{
 		if (a->len == 4)
-			pivot = lowest(a, a->len);
-		else
-			pivot = find_pivot(a, a->len, STACK_A);
-		if (a->content[0] > pivot)
-			rotate_a(pivot, 0, a);
+			a->pivot = lowest(a, a->len);
+		if (a->content[0] > a->pivot)
+			rotate_a(a);
 		else
 		{
 			pb(b, a);
 			++n_pushes;
 		}
 	}
-	push_swap_3a(a->len, 0, a, b);
+	push_swap_3a(a->len, a, b);
 	while (--n_pushes >= 0)
 		pa(a, b);
 	try_ss(a, b);
@@ -108,22 +105,18 @@ void	push_swap_5a(t_stack *a, t_stack *b)
 
 void	push_swap_5b(t_stack *a, t_stack *b)
 {
-	int	pivot;
-
 	try_ss(a, b);
 	while (b->len > 3 && !is_correct(b, b->len, STACK_B))
 	{
 		if (b->len == 4)
-			pivot = highest(b, b->len);
-		else
-			pivot = find_pivot(b, b->len, STACK_B);
-		if (b->content[0] < pivot)
-			rotate_b(pivot, 0, b);
+			b->pivot = highest(b, b->len);
+		if (b->content[0] < b->pivot)
+			rotate_b(b);
 		else
 			pa(a, b);
 	}
 	try_ss(a, b);
-	push_swap_3b(b->len, 0, a, b);
+	push_swap_3b(b->len, a, b);
 	while (b->len)
 		pa(a, b);
 	try_ss(a, b);

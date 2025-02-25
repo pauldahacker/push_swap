@@ -55,61 +55,51 @@ int	find_pivot(t_stack *stack, int len, int a_or_b)
 static void	split_a(t_stack *a, t_stack *b, int len)
 {
 	int	startlen;
-	int	n_rotates;
-	int	pivot;
 
     startlen = a->len;
-    pivot = find_pivot(a, len, STACK_A);
-    n_rotates = 0;
     while (startlen - a->len < len / 2)
     {
-        if (b->content[0] == pivot && b->len > 1)
+        if (b->content[0] == a->pivot && b->len > 1)
             rb(b);
-        if (a->content[0] > pivot)
+        if (a->content[0] > a->pivot)
         {
-            if (b->content[0] == pivot)
-                n_rotates += rab(a, b);
+            if (b->content[0] == a->pivot)
+                a->n_rotates += rab(a, b);
             else
-                n_rotates += ra(a);
+                a->n_rotates += ra(a);
         }
         else
             pb(b, a);
     }
-    put_on_top_a(n_rotates, pivot, a, b);
+    put_on_top_a(a, b);
 }
 
 static void	split_b(t_stack *a, t_stack *b, int len)
 {
     int	startlen;
-    int	n_rotates;
-    int	pivot;
 
     startlen = b->len;
-    pivot = find_pivot(b, len, STACK_B);
-    n_rotates = 0;
     while (startlen - b->len < len / 2)
     {
-        if (a->content[0] == pivot && a->len > 1)
+        if (a->content[0] == b->pivot && a->len > 1)
             ra(a);
-        if (b->content[0] < pivot)
+        if (b->content[0] < b->pivot)
         {
-            if (a->content[0] == pivot)
-                n_rotates += rab(b, a);
+            if (a->content[0] == b->pivot)
+                b->n_rotates += rab(b, a);
             else
-                n_rotates += rb(b);
+            	b->n_rotates += rb(b);
         }
         else
             pa(a, b);
     }
-    put_on_top_b(n_rotates, pivot, a, b);
+    put_on_top_b(a, b);
 }
 
 void    mutual_sort_a(t_stack *a, t_stack *b, int len)
 {
-	if (a->len == len)
-		a->is_segmented = FALSE;
-	else
-		a->is_segmented = TRUE;
+	a->is_segmented = (a->len != len);
+	a->pivot = find_pivot(a, len, STACK_A);
     if (a->len <= 5)
         return (push_swap_5a(a, b));
     if (is_correct(a, a->len, STACK_A) && is_correct(b, b->len, STACK_B))
@@ -127,10 +117,8 @@ void    mutual_sort_a(t_stack *a, t_stack *b, int len)
 
 void    mutual_sort_b(t_stack *b, t_stack *a, int len)
 {
-	if (b->len == len)
-		b->is_segmented = FALSE;
-	else
-		b->is_segmented = TRUE;
+	b->is_segmented = (b->len != len);
+	b->pivot = find_pivot(b, len, STACK_B);
     if (b->len <= 5)
         return (push_swap_5b(a, b));
     if (is_correct(a, a->len, STACK_A) && is_correct(b, b->len, STACK_B))

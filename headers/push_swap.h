@@ -32,6 +32,7 @@ typedef struct s_stack
 	int	len;
 	int	is_segmented;
 	int	n_rotates;
+	int	pivot;
 }		t_stack;
 
 // swap.c
@@ -73,16 +74,16 @@ int		highest(t_stack *stack, int len);
 int		is_correct(t_stack *stack, int len, int a_or_b);
 
 // small_sort.c
-void	push_swap_3a(int len, int is_segmented, t_stack *a, t_stack *b);
-void	push_swap_3b(int len, int is_segmented, t_stack *a, t_stack *b);
+void	push_swap_3a(int len, t_stack *a, t_stack *b);
+void	push_swap_3b(int len, t_stack *a, t_stack *b);
 void	push_swap_5a(t_stack *a, t_stack *b);
 void	push_swap_5b(t_stack *a, t_stack *b);
 
 // mutual_sort_utils.c
-int		rotate_a(int pivot, int is_segmented, t_stack *a);
-int		rotate_b(int pivot, int is_segmented, t_stack *b);
-void	put_on_top_a(int n_rotates, int pivot, t_stack *a, t_stack *b);
-void	put_on_top_b(int n_rotates, int pivot, t_stack *a, t_stack *b);
+int		rotate_a(t_stack *a);
+int		rotate_b(t_stack *b);
+void	put_on_top_a(t_stack *a, t_stack *b);
+void	put_on_top_b(t_stack *a, t_stack *b);
 
 // mutual_sort.c
 int		find_pivot(t_stack *stack, int len, int a_or_b);

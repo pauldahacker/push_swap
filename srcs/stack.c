@@ -28,6 +28,7 @@ t_stack	*init_stack(size_t size, int len)
 	init->len = len;
 	init->is_segmented = FALSE;
 	init->n_rotates = 0;
+	init->pivot = 0;
 	return (init);
 }
 
