@@ -39,8 +39,8 @@ typedef struct s_stack
 void	s(t_stack *stack);
 void	sa(t_stack *a);
 void	sb(t_stack *b);
-void	ss(t_stack *a, t_stack *b);
-void	try_ss(t_stack *a, t_stack *b);
+void	ss(t_stack *stack1, t_stack *stack2);
+void	try_ss(t_stack *stack1, t_stack *stack2);
 
 // push.c
 int	p(t_stack *stack1, t_stack *stack2);

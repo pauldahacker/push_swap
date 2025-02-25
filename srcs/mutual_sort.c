@@ -59,18 +59,27 @@ static void	split_a(t_stack *a, t_stack *b, int len)
     n_pushes = 0;
     while (n_pushes < len / 2)
     {
-        if (b->content[0] == a->pivot && b->len > 1)
-            rb(b);
+        if (n_pushes == len / 2 - 1)
+        {
+            if (a->content[0] > a->pivot && a->content[1] <= a->pivot)
+                sa(a);
+        }
         if (a->content[0] > a->pivot)
         {
-            if (b->content[0] == a->pivot && b->len > 1)
+            if (b->content[0] == a->pivot)
                 a->n_rotates += rab(a, b);
             else
                 a->n_rotates += ra(a);
         }
         else
+        {
+            if (b->content[0] == a->pivot && n_pushes != len / 2 - 1)
+                rb(b);
             n_pushes += pb(b, a);
+        }
     }
+    if (b->content[1] == a->pivot)
+        sb(b);
     put_on_top_a(a, b);
 }
 
@@ -81,18 +90,27 @@ static void	split_b(t_stack *a, t_stack *b, int len)
     n_pushes = 0;
     while (n_pushes < len / 2)
     {
-        if (a->content[0] == b->pivot && a->len > 1)
-            ra(a);
+        if (n_pushes == len / 2 - 1)
+        {
+            if (b->content[0] < b->pivot && b->content[1] >= b->pivot)
+                sb(b);
+        }
         if (b->content[0] < b->pivot)
         {
-            if (a->content[0] == b->pivot && a->len > 1)
+            if (a->content[0] == b->pivot)
                 b->n_rotates += rab(b, a);
             else
-            	b->n_rotates += rb(b);
+                b->n_rotates += rb(b);
         }
         else
+        {
+            if (a->content[0] == b->pivot && n_pushes != len / 2 - 1)
+                ra(a);
             n_pushes += pa(a, b);
+        }
     }
+    if (a->content[1] == b->pivot)
+        sa(a);
     put_on_top_b(a, b);
 }
 

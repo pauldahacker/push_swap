@@ -23,7 +23,7 @@ int	rotate_a(t_stack *a)
 		++from_front;
 	while (a->content[(a->len - 1) - from_back] > a->pivot)
 		++from_back;
-	if (from_front < from_back || a->is_segmented)
+	if (from_front <= from_back || a->is_segmented)
 		return (ra(a));
 	else
 		return (rra(a));
@@ -41,7 +41,7 @@ int	rotate_b(t_stack *b)
 		++from_front;
 	while (b->content[(b->len - 1) - from_back] < b->pivot)
 		++from_back;
-	if (from_front < from_back || b->is_segmented)
+	if (from_front <= from_back || b->is_segmented)
 		return (rb(b));
 	else
 		return (rrb(b));
@@ -60,7 +60,10 @@ void	put_on_top_a(t_stack *a, t_stack *b)
 	if (a->n_rotates < 0)
 	{
 		while (a->n_rotates < 0)
+		{
+			// printf("...\n");
 			a->n_rotates += ra(a);
+		}
 	}
 	if (b->content[0] != a->pivot)
 		rrb(b);
