@@ -54,44 +54,44 @@ int	find_pivot(t_stack *stack, int len, int a_or_b)
 
 static void	split_a(t_stack *a, t_stack *b, int len)
 {
-	int	startlen;
+	int	n_pushes;
 
-    startlen = a->len;
-    while (startlen - a->len < len / 2)
+    n_pushes = 0;
+    while (n_pushes < len / 2)
     {
         if (b->content[0] == a->pivot && b->len > 1)
             rb(b);
         if (a->content[0] > a->pivot)
         {
-            if (b->content[0] == a->pivot)
+            if (b->content[0] == a->pivot && b->len > 1)
                 a->n_rotates += rab(a, b);
             else
                 a->n_rotates += ra(a);
         }
         else
-            pb(b, a);
+            n_pushes += pb(b, a);
     }
     put_on_top_a(a, b);
 }
 
 static void	split_b(t_stack *a, t_stack *b, int len)
 {
-    int	startlen;
+    int	n_pushes;
 
-    startlen = b->len;
-    while (startlen - b->len < len / 2)
+    n_pushes = 0;
+    while (n_pushes < len / 2)
     {
         if (a->content[0] == b->pivot && a->len > 1)
             ra(a);
         if (b->content[0] < b->pivot)
         {
-            if (a->content[0] == b->pivot)
+            if (a->content[0] == b->pivot && a->len > 1)
                 b->n_rotates += rab(b, a);
             else
             	b->n_rotates += rb(b);
         }
         else
-            pa(a, b);
+            n_pushes += pa(a, b);
     }
     put_on_top_b(a, b);
 }
@@ -108,8 +108,8 @@ void    mutual_sort_a(t_stack *a, t_stack *b, int len)
             pa(a, b);
         return ;
     }
-    if (len <= 2 || is_correct(a, len, STACK_A))
-        return try_ss(a, b);
+    if (is_correct(a, len, STACK_A))
+        return ;
     split_a(a, b, len);
     mutual_sort_a(a, b, len - len / 2);
     mutual_sort_b(b, a, len / 2);

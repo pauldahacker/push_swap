@@ -22,14 +22,16 @@ void	push_swap_3a(int len, t_stack *a, t_stack *b)
 		return ;
 	if (a->is_segmented)
 	{
-		n_rotates = -1;
-		while (a->content[0] != lowest(a, len - ++n_rotates))
-			ra(a);
+		n_rotates = 0;
+		while (a->content[0] >= a->pivot)
+			n_rotates += ra(a);
 		pb(b, a);
-		while (--n_rotates >= 0)
-			rra(a);
-		try_ss(a, b);
-		return (pa(a, b));
+		while (n_rotates > 0)
+			n_rotates += rra(a);
+		if (a->content[0] > a->content[1])
+			sa(a);
+		pa(a, b);
+		return ;
 	}
 	else if (a->content[1] == highest(a, 3)
 		|| (a->content[2] != highest(a, 3) && a->content[2] != lowest(a, 3)))
@@ -66,7 +68,8 @@ void	push_swap_3b(int len, t_stack *a, t_stack *b)
 		if (b->content[0] != lowest(b, len))
 			rrb(b);
 		try_ss(a, b);
-		return (pa(a, b));
+		pa(a, b);
+		return ;
 	}
 	if (b->content[1] == lowest(b, 3)
 		|| (b->content[2] != lowest(b, 3) && b->content[2] != highest(b, 3)))

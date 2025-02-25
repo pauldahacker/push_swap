@@ -12,13 +12,16 @@
 
 #include "push_swap.h"
 
-void	p(t_stack *stack1, t_stack *stack2)
+/*
+pushes return (1) or (0) to keep track of how many elements we push
+*/
+int	p(t_stack *stack1, t_stack *stack2)
 {
 	int	len;
 	int	i;
 
-	if (!stack1 || !stack2)
-		return ;
+	if (!stack1 || !stack2 || !stack2->len)
+		return (0);
 	len = stack1->len + 1;
 	while (--len > 0)
 		stack1->content[len] = stack1->content[len - 1];
@@ -31,16 +34,17 @@ void	p(t_stack *stack1, t_stack *stack2)
 	}
 	--stack2->len;
 	++stack1->len;
+	return (1);
 }
 
-void	pa(t_stack *a, t_stack *b)
+int	pa(t_stack *a, t_stack *b)
 {
 	write(1, "pa\n", 3);
-	p(a, b);
+	return (p(a, b));
 }
 
-void	pb(t_stack *b, t_stack *a)
+int	pb(t_stack *b, t_stack *a)
 {
 	write(1, "pb\n", 3);
-	p(b, a);
+	return (p(b, a));
 }

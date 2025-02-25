@@ -22,6 +22,8 @@ static void	push_swap(t_stack *a)
 	if (!b)
 		handle_error(a);
 	mutual_sort_a(a, b, a->len);
+	// print_stack(a);
+	// printf("worked: %d\n", is_correct(a, a->len, STACK_A));
 	destroy_stack(&b);
 }
 

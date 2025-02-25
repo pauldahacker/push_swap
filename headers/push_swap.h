@@ -43,9 +43,9 @@ void	ss(t_stack *a, t_stack *b);
 void	try_ss(t_stack *a, t_stack *b);
 
 // push.c
-void	p(t_stack *stack1, t_stack *stack2);
-void	pa(t_stack *a, t_stack *b);
-void	pb(t_stack *b, t_stack *a);
+int	p(t_stack *stack1, t_stack *stack2);
+int	pa(t_stack *a, t_stack *b);
+int	pb(t_stack *b, t_stack *a);
 
 // rotate.c
 int		r(t_stack *stack);

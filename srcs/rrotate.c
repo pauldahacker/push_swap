@@ -13,7 +13,7 @@
 #include "push_swap.h"
 
 /*
-rotates return (-1) or (0) to keep track of how many elements we rotate.
+reverse-rotates return (-1) or (0) to keep track of how many elements we rotate
 The rotate count should decrease by 1 if and only if:
 	- the stack exists and is not empty;
 	- the stack is segmented
