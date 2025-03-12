@@ -18,12 +18,10 @@ static void	push_swap(t_stack *a)
 
 	if (!a || !(a->len) || a->len == 1)
 		return ;
-	b = init_stack(a->len, 0);
+	b = init_stack(a->len, B);
 	if (!b)
 		handle_error(a);
 	mutual_sort_a(a, b, a->len);
-	// print_stack(a);
-	// printf("worked: %d\n", is_correct(a, a->len, STACK_A));
 	destroy_stack(&b);
 }
 
@@ -33,7 +31,7 @@ int	main(int argc, char *argv[])
 
 	if (!argc || argc == 1)
 		return (0);
-	a = create_stack(argc - 1, argv + 1);
+	a = create_stack_A(argc - 1, argv + 1);
 	push_swap(a);
 	destroy_stack(&a);
 	return (0);

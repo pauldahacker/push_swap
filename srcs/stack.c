@@ -12,32 +12,37 @@
 
 #include "push_swap.h"
 
-t_stack	*init_stack(size_t size, int len)
+t_stack	*init_stack(int len, int a_or_b)
 {
 	t_stack	*init;
 
 	init = malloc(sizeof(t_stack));
 	if (!init)
 		return (NULL);
-	init->content = (int *)malloc((size) * sizeof(int));
+	init->content = (int *)malloc((len) * sizeof(int));
 	if (!init->content)
 	{
 		free(init);
 		return (NULL);
 	}
-	init->len = len;
+	if (a_or_b == A)
+		init->len = len;
+	else
+		init->len = 0;
+	init->a_or_b = a_or_b;
 	init->is_segmented = FALSE;
 	init->n_rotates = 0;
+	init->n_pushes = 0;
 	init->pivot = 0;
 	return (init);
 }
 
-t_stack	*create_stack(int len, char *argv[])
+t_stack	*create_stack_A(int len, char *argv[])
 {
 	int		i;
 	t_stack	*new_stack;
 
-	new_stack = init_stack(len, len);
+	new_stack = init_stack(len, A);
 	if (len == 1)
 		help_create(argv[0], new_stack);
 	else
@@ -86,7 +91,7 @@ int	highest(t_stack *stack, int len)
 	return (tmp);
 }
 
-int	is_correct(t_stack *stack, int len, int a_or_b)
+int	is_correct(t_stack *stack, int len)
 {
 	int	i;
 	int	j;
@@ -101,9 +106,9 @@ int	is_correct(t_stack *stack, int len, int a_or_b)
 		j = ++i;
 		while (j < stack->len)
 		{
-			if (a_or_b == STACK_A && stack->content[j] < tmp)
+			if (stack->a_or_b == A && stack->content[j] < tmp)
 				return (0);
-			if (a_or_b == STACK_B && stack->content[j] > tmp)
+			if (stack->a_or_b == B && stack->content[j] > tmp)
 				return (0);
 			++j;
 		}

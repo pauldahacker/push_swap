@@ -20,8 +20,8 @@
 # include <stdlib.h>
 # include "../libft/libft.h"
 
-# define STACK_A 'A'
-# define STACK_B 'B'
+# define A 'A'
+# define B 'B'
 
 # define TRUE 1
 # define FALSE 0
@@ -30,8 +30,10 @@ typedef struct s_stack
 {
 	int	*content;
 	int	len;
+	int	a_or_b;
 	int	is_segmented;
 	int	n_rotates;
+	int	n_pushes;
 	int	pivot;
 }		t_stack;
 
@@ -67,15 +69,15 @@ int		has_repeats(t_stack *stack);
 void	help_create(char *numbers, t_stack *new_stack);
 
 // stack.c
-t_stack	*init_stack(size_t size, int len);
-t_stack	*create_stack(int len, char *argv[]);
+t_stack	*init_stack(int len, int a_or_b);
+t_stack	*create_stack_A(int len, char *argv[]);
 int		lowest(t_stack *stack, int len);
 int		highest(t_stack *stack, int len);
-int		is_correct(t_stack *stack, int len, int a_or_b);
+int		is_correct(t_stack *stack, int len);
 
 // small_sort.c
-void	push_swap_3a(int len, t_stack *a, t_stack *b);
-void	push_swap_3b(int len, t_stack *a, t_stack *b);
+void	push_swap_3a(t_stack *a);
+void	push_swap_3b(t_stack *a, t_stack *b);
 void	push_swap_5a(t_stack *a, t_stack *b);
 void	push_swap_5b(t_stack *a, t_stack *b);
 
@@ -86,7 +88,7 @@ void	put_on_top_a(t_stack *a, t_stack *b);
 void	put_on_top_b(t_stack *a, t_stack *b);
 
 // mutual_sort.c
-int		find_pivot(t_stack *stack, int len, int a_or_b);
+int		find_pivot(t_stack *stack, int len);
 void	mutual_sort_a(t_stack *a, t_stack *b, int len);
 void	mutual_sort_b(t_stack *a, t_stack *b, int len);
 

@@ -41,7 +41,7 @@ static void    checker(t_stack *a)
 
     b = init_stack(a->len, 0);
     apply_instructions(a, b);
-    if (is_correct(a, a->len, STACK_A))
+    if (is_correct(a, a->len, A))
 		write(1, "OK\n", 3);
 	else
 		write(1, "KO\n", 3);

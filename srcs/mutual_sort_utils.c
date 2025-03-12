@@ -60,10 +60,7 @@ void	put_on_top_a(t_stack *a, t_stack *b)
 	if (a->n_rotates < 0)
 	{
 		while (a->n_rotates < 0)
-		{
-			// printf("...\n");
 			a->n_rotates += ra(a);
-		}
 	}
 	if (b->content[0] != a->pivot)
 		rrb(b);

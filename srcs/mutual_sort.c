@@ -28,7 +28,7 @@ Finds the pivot (p) for either A or B, ranging from position 0 to len.
 For A,	p = number in A such that len / 2 numbers are less than or equal to p.
 For B,	p = number in B such that len / 2 numbers are less than p.
 */
-int	find_pivot(t_stack *stack, int len, int a_or_b)
+int	find_pivot(t_stack *stack, int len)
 {
 	int	i;
 	int	j;
@@ -41,9 +41,9 @@ int	find_pivot(t_stack *stack, int len, int a_or_b)
 		j = -1;
 		while (++j < len)
 		{
-			if (a_or_b == STACK_A && stack->content[j] <= stack->content[i])
+			if (stack->a_or_b == A && stack->content[j] <= stack->content[i])
 				++count;
-			if (a_or_b == STACK_B && stack->content[j] >= stack->content[i])
+			if (stack->a_or_b == B && stack->content[j] >= stack->content[i])
 				++count;
 		}
 		if (count == len / 2)
@@ -117,16 +117,16 @@ static void	split_b(t_stack *a, t_stack *b, int len)
 void    mutual_sort_a(t_stack *a, t_stack *b, int len)
 {
 	a->is_segmented = (a->len != len);
-	a->pivot = find_pivot(a, len, STACK_A);
+	a->pivot = find_pivot(a, len);
     if (a->len <= 5)
         return (push_swap_5a(a, b));
-    if (is_correct(a, a->len, STACK_A) && is_correct(b, b->len, STACK_B))
+    if (is_correct(a, a->len) && is_correct(b, b->len))
     {
         while (b->len)
             pa(a, b);
         return ;
     }
-    if (is_correct(a, len, STACK_A))
+    if (is_correct(a, len))
         return ;
     split_a(a, b, len);
     mutual_sort_a(a, b, len - len / 2);
@@ -136,16 +136,16 @@ void    mutual_sort_a(t_stack *a, t_stack *b, int len)
 void    mutual_sort_b(t_stack *b, t_stack *a, int len)
 {
 	b->is_segmented = (b->len != len);
-	b->pivot = find_pivot(b, len, STACK_B);
+	b->pivot = find_pivot(b, len);
     if (b->len <= 5)
         return (push_swap_5b(a, b));
-    if (is_correct(a, a->len, STACK_A) && is_correct(b, b->len, STACK_B))
+    if (is_correct(a, a->len) && is_correct(b, b->len))
     {
         while (b->len)
             pa(a, b);
         return ;
     }
-    if (len <= 2 || is_correct(b, len, STACK_B))
+    if (len <= 2 || is_correct(b, len))
     {
         try_ss(a, b);
         while (--len >= 0)
