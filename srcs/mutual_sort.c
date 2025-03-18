@@ -34,6 +34,10 @@ int	find_pivot(t_stack *stack, int len)
 	int	j;
 	int	count;
 
+    if (stack->len == 4 && stack->a_or_b == A)
+        return (lowest(stack, 4));
+    if (stack->len == 4 && stack->a_or_b == B)
+        return (highest(stack, 4));
 	i = -1;
 	while (++i < len)
 	{
@@ -52,51 +56,87 @@ int	find_pivot(t_stack *stack, int len)
 	return (stack->content[i]);
 }
 
-static void	split_a(t_stack *a, t_stack *b, int len)
+void	try_swapping(t_stack *stack1, t_stack *stack2, int pushes_left)
+{
+	int	i;
+	int	pushable_count;
+
+	i = 0;
+	pushable_count = 0;
+    if (stack1->len < 2)
+        return ;
+    s(stack1);
+    if (is_correct(stack1, stack1->len))
+    {
+        s(stack1);
+        try_ss(stack1, stack2);
+        return ;
+    }
+    s(stack1);
+	while (++i <= pushes_left)
+	{
+		if (stack1->a_or_b == A && stack1->content[i] <= stack1->pivot)
+			pushable_count++;
+		else if (stack1->a_or_b == B && stack1->content[i] >= stack1->pivot)
+			pushable_count++;
+	}
+
+	// If a significant number of upcoming elements are pushable, we swap
+	if (pushable_count == pushes_left)
+		try_ss(stack1, stack2);
+}
+
+static int	split_a(t_stack *a, t_stack *b, int len)
 {
 	int	n_pushes;
 
     n_pushes = 0;
-    while (n_pushes < len / 2)
+    while (n_pushes < len / 2 && a->len > 3)
     {
-        if (n_pushes == len / 2 - 1)
-        {
-            if (a->content[0] > a->pivot && a->content[1] <= a->pivot)
-                sa(a);
-        }
+        try_swapping(a, b, len / 2 - n_pushes);
         if (a->content[0] > a->pivot)
         {
-            if (b->content[0] == a->pivot)
-                a->n_rotates += rab(a, b);
+            // if (a->content[1] <= a->pivot && a->content[a->len - 1] < a->content[1])
+            //     rra(a);
+            if (b->len > 1 && b->content[b->len - 1] != a->pivot)
+            {
+                if (b->content[0] == a->pivot || b->content[b->len - 1] > b->content[0])
+                    a->n_rotates += rab(a, b);
+                else
+                    a->n_rotates += ra(a);
+            }
             else
                 a->n_rotates += ra(a);
         }
         else
         {
+            if (a->content[a->len - 1] < a->content[0])
+                rra(a);
+            if (is_correct(a, a->len) && a->content[0] > highest(b, b->len))
+                break ;
             if (b->content[0] == a->pivot && n_pushes != len / 2 - 1)
                 rb(b);
             n_pushes += pb(b, a);
         }
     }
     if (b->content[1] == a->pivot)
-        sb(b);
+        try_ss(b, a);
     put_on_top_a(a, b);
+    return (n_pushes);
 }
 
-static void	split_b(t_stack *a, t_stack *b, int len)
+static int	split_b(t_stack *a, t_stack *b, int len)
 {
     int	n_pushes;
 
     n_pushes = 0;
-    while (n_pushes < len / 2)
+    while (n_pushes < len / 2 && b->len > 3)
     {
-        if (n_pushes == len / 2 - 1)
-        {
-            if (b->content[0] < b->pivot && b->content[1] >= b->pivot)
-                sb(b);
-        }
+        try_swapping(b, a, len / 2 - n_pushes);
         if (b->content[0] < b->pivot)
         {
+            // if (b->content[1] >= b->pivot)
+            //     rrb(b);
             if (a->content[0] == b->pivot)
                 b->n_rotates += rab(b, a);
             else
@@ -104,41 +144,53 @@ static void	split_b(t_stack *a, t_stack *b, int len)
         }
         else
         {
+            if (b->content[b->len - 1] > b->content[0])
+                rrb(b);
+            if (is_correct(b, b->len) && b->content[0] < lowest(a, a->len))
+                break ;
             if (a->content[0] == b->pivot && n_pushes != len / 2 - 1)
                 ra(a);
             n_pushes += pa(a, b);
         }
     }
     if (a->content[1] == b->pivot)
-        sa(a);
+        try_ss(a, b);
     put_on_top_b(a, b);
+    return (n_pushes);
 }
 
 void    mutual_sort_a(t_stack *a, t_stack *b, int len)
 {
+    int n_pushes;
+
 	a->is_segmented = (a->len != len);
 	a->pivot = find_pivot(a, len);
-    if (a->len <= 5)
-        return (push_swap_5a(a, b));
-    if (is_correct(a, a->len) && is_correct(b, b->len))
+    if (a->len <= 3)
+        return (push_swap_3a(a));
+    if (len <= 2 || is_correct(a, a->len))
     {
-        while (b->len)
-            pa(a, b);
+        if (len == 2 && !is_correct(a, 2))
+            try_ss(a, b);
+        if (is_correct(b, b->len))
+        {
+            while (b->len)
+                pa(a, b);
+        }
         return ;
     }
-    if (is_correct(a, len))
-        return ;
-    split_a(a, b, len);
-    mutual_sort_a(a, b, len - len / 2);
-    mutual_sort_b(b, a, len / 2);
+    n_pushes = split_a(a, b, len);
+    mutual_sort_a(a, b, len - n_pushes);
+    mutual_sort_b(b, a, n_pushes);
 }
 
 void    mutual_sort_b(t_stack *b, t_stack *a, int len)
 {
+    int n_pushes;
+
 	b->is_segmented = (b->len != len);
 	b->pivot = find_pivot(b, len);
-    if (b->len <= 5)
-        return (push_swap_5b(a, b));
+    if (b->len <= 3)
+        return (push_swap_3b(a, b));
     if (is_correct(a, a->len) && is_correct(b, b->len))
     {
         while (b->len)
@@ -147,12 +199,13 @@ void    mutual_sort_b(t_stack *b, t_stack *a, int len)
     }
     if (len <= 2 || is_correct(b, len))
     {
-        try_ss(a, b);
+        if (len == 2 && !is_correct(b, 2))
+            try_ss(b, a);
         while (--len >= 0)
             pa(a, b);
         return ;
     }
-    split_b(a, b, len);
-    mutual_sort_a(a, b, len / 2);
-    mutual_sort_b(b, a, len - len / 2);
+    n_pushes = split_b(a, b, len);
+    mutual_sort_a(a, b, n_pushes);
+    mutual_sort_b(b, a, len - n_pushes);
 }
