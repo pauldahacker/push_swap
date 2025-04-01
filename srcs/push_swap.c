@@ -21,7 +21,9 @@ static void	push_swap(t_stack *a)
 	b = init_stack(a->len, B);
 	if (!b)
 		handle_error(a);
-	mutual_sort_a(a, b, a->len);
+	a->other_stack = b;
+	b->other_stack = a;
+	mutual_sort_a(a, a->len);
 	destroy_stack(&b);
 }
 
@@ -32,6 +34,7 @@ int	main(int argc, char *argv[])
 	if (!argc || argc == 1)
 		return (0);
 	a = create_stack_A(argc - 1, argv + 1);
+	// printf("is correct: %d\n", is_correct(a, a->len));
 	push_swap(a);
 	destroy_stack(&a);
 	return (0);

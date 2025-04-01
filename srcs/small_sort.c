@@ -14,9 +14,9 @@
 
 void	push_swap_3a(t_stack *a)
 {
-	if (a->len == 3 && a->content[1] == highest(a, 3))
+	if (a->len == 3 && a->content[1] == highest(a->content, 3))
 		rra(a);
-	if (a->len == 3 && a->content[0] == highest(a, 3))
+	if (a->len == 3 && a->content[0] == highest(a->content, 3))
 		ra(a);
 	if (!is_correct(a, 3))
 		sa(a);
@@ -24,13 +24,21 @@ void	push_swap_3a(t_stack *a)
 
 void	push_swap_3b(t_stack *a, t_stack *b)
 {
-	if (b->len == 3 && b->content[1] == lowest(b, 3))
+	if (b->len == 3 && b->content[1] == lowest(b->content, 3))
 		rrb(b);
-	if (b->len == 3 && b->content[0] == lowest(b, 3))
+	if (b->len == 3 && b->content[0] == lowest(b->content, 3))
 		rb(b);
-	if (!is_correct(b, 3))
+	if (!is_reverse_correct(b, 3))
 		sb(b);
 	while (b->len)
 		pa(a, b);
 	return ;
 }
+
+// void	push_swap_4a(t_stack *a, t_stack *b)
+// {
+// 	while (a->len != 3)
+// 	{
+		
+// 	}
+// }

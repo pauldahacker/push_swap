@@ -15,7 +15,7 @@
 /*
 pushes return (1) or (0) to keep track of how many elements we push
 */
-int	p(t_stack *stack1, t_stack *stack2)
+int	push(t_stack *stack1, t_stack *stack2)
 {
 	int	len;
 	int	i;
@@ -40,11 +40,11 @@ int	p(t_stack *stack1, t_stack *stack2)
 int	pa(t_stack *a, t_stack *b)
 {
 	write(1, "pa\n", 3);
-	return (p(a, b));
+	return (push(a, b));
 }
 
 int	pb(t_stack *b, t_stack *a)
 {
 	write(1, "pb\n", 3);
-	return (p(b, a));
+	return (push(b, a));
 }

@@ -33,9 +33,9 @@ char	*destroy(char **s);
 char	*assemble(int fd, char *buf, int readbytes);
 
 // checker_utils.c
-void	apply_r(t_stack *a, t_stack *b, char *line);
-void	apply_p(t_stack *a, t_stack *b, char *line);
-void	apply_s(t_stack *a, t_stack *b, char *line);
+void	apply_rotate(t_stack *a, t_stack *b, char *line);
+void	apply_push(t_stack *a, t_stack *b, char *line);
+void	apply_swap(t_stack *a, t_stack *b, char *line);
 int		is_move_valid(char *move);
 
 #endif

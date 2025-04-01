@@ -34,10 +34,6 @@ int	find_pivot(t_stack *stack, int len)
 	int	j;
 	int	count;
 
-    if (stack->len == 4 && stack->a_or_b == A)
-        return (lowest(stack, 4));
-    if (stack->len == 4 && stack->a_or_b == B)
-        return (highest(stack, 4));
 	i = -1;
 	while (++i < len)
 	{
@@ -50,40 +46,83 @@ int	find_pivot(t_stack *stack, int len)
 			if (stack->a_or_b == B && stack->content[j] >= stack->content[i])
 				++count;
 		}
-		if (count == len / 2)
+        if (stack->len == 4 && count == 1)
+            break ;
+		if (stack->len != 4 && count == len / 2)
 			break ;
 	}
 	return (stack->content[i]);
 }
 
-void	try_swapping(t_stack *stack1, t_stack *stack2, int pushes_left)
+/*
+Returns 1 if swapping the stack is a smart move, 0 if not.
+Conditions for swapping to be a smart move:
+    i.  leads to a correct setup 
+    OR
+    ii. the first element of the stack should stay on the stack
+    and all remaining elements that need to be pushed on other stack
+    are directly after the first element.
+*/
+int	should_swap(t_stack *stack, int pushes_left)
 {
 	int	i;
 	int	pushable_count;
+    int flag;
 
 	i = 0;
 	pushable_count = 0;
-    if (stack1->len < 2)
-        return ;
-    s(stack1);
-    if (is_correct(stack1, stack1->len))
-    {
-        s(stack1);
-        try_ss(stack1, stack2);
-        return ;
-    }
-    s(stack1);
+    flag = 0;
+    if (stack->len < 2)
+        return (flag);
+    swap(stack);
+    if ((stack->a_or_b == A && is_correct(stack, stack->len))
+        || (stack->a_or_b == B && is_reverse_correct(stack, stack->len)))
+        flag = 1;
+    swap(stack);
 	while (++i <= pushes_left)
 	{
-		if (stack1->a_or_b == A && stack1->content[i] <= stack1->pivot)
-			pushable_count++;
-		else if (stack1->a_or_b == B && stack1->content[i] >= stack1->pivot)
+		if ((stack->a_or_b == A && stack->content[i] <= stack->pivot)
+            || (stack->a_or_b == B && stack->content[i] >= stack->pivot))
 			pushable_count++;
 	}
-
-	// If a significant number of upcoming elements are pushable, we swap
 	if (pushable_count == pushes_left)
-		try_ss(stack1, stack2);
+		flag = 1;
+    return (flag);
+}
+
+/*
+Checks if rotating the stack using r or rr leads to a correct setup.
+If so, it returns ROTATE_FLAG or RROTATE_FLAG.
+If not, it returns 0.
+*/
+int should_rotate(t_stack *stack, int pushes_left)
+{
+    int flag;
+
+    flag = 0;
+    if (stack->len < 2)
+        return (flag);
+    rotate(stack);
+    if ((stack->a_or_b == A && is_correct(stack, stack->len))
+        || (stack->a_or_b == B && is_reverse_correct(stack, stack->len)))
+        flag = ROTATE_FLAG;
+    rrotate(stack);
+    rrotate(stack);
+    if (stack->a_or_b == A)
+    {
+        if (is_correct(stack, stack->len)
+            || (stack->content[0] <= stack->pivot))
+            flag = RROTATE_FLAG;
+    }
+    if (stack->a_or_b == B)
+    {
+        if (is_reverse_correct(stack, stack->len)
+            || (stack->content[0] >= stack->pivot))
+            flag = RROTATE_FLAG;
+    }
+    (void)pushes_left;
+    rotate(stack);
+    return (flag);
 }
 
 static int	split_a(t_stack *a, t_stack *b, int len)
@@ -91,35 +130,24 @@ static int	split_a(t_stack *a, t_stack *b, int len)
 	int	n_pushes;
 
     n_pushes = 0;
-    while (n_pushes < len / 2 && a->len > 3)
+    while (!fast_solution_check(a, a->len) && n_pushes < len / 2)
     {
-        try_swapping(a, b, len / 2 - n_pushes);
-        if (a->content[0] > a->pivot)
-        {
-            // if (a->content[1] <= a->pivot && a->content[a->len - 1] < a->content[1])
-            //     rra(a);
-            if (b->len > 1 && b->content[b->len - 1] != a->pivot)
-            {
-                if (b->content[0] == a->pivot || b->content[b->len - 1] > b->content[0])
-                    a->n_rotates += rab(a, b);
-                else
-                    a->n_rotates += ra(a);
-            }
-            else
-                a->n_rotates += ra(a);
-        }
+        if (should_swap(a, len / 2 - n_pushes))
+            try_ss(a, b);
+        else if (should_rotate(a, len / 2 - n_pushes) == ROTATE_FLAG)
+            try_rab(a, b);
+        else if (should_rotate(a, len / 2 - n_pushes) == RROTATE_FLAG)
+            try_rrab(a, b);
+        else if (a->content[0] > a->pivot)
+            a->n_rotates += try_rab(a, b);
         else
         {
-            if (a->content[a->len - 1] < a->content[0])
-                rra(a);
-            if (is_correct(a, a->len) && a->content[0] > highest(b, b->len))
-                break ;
             if (b->content[0] == a->pivot && n_pushes != len / 2 - 1)
                 rb(b);
             n_pushes += pb(b, a);
         }
     }
-    if (b->content[1] == a->pivot)
+    if (b->len > 1 && b->content[1] == a->pivot)
         try_ss(b, a);
     put_on_top_a(a, b);
     return (n_pushes);
@@ -130,82 +158,72 @@ static int	split_b(t_stack *a, t_stack *b, int len)
     int	n_pushes;
 
     n_pushes = 0;
-    while (n_pushes < len / 2 && b->len > 3)
+    while (!fast_solution_check(b, b->len) && n_pushes < len / 2)
     {
-        try_swapping(b, a, len / 2 - n_pushes);
-        if (b->content[0] < b->pivot)
-        {
-            // if (b->content[1] >= b->pivot)
-            //     rrb(b);
-            if (a->content[0] == b->pivot)
-                b->n_rotates += rab(b, a);
-            else
-                b->n_rotates += rb(b);
-        }
+        if (should_swap(b, len / 2 - n_pushes))
+            try_ss(b, a);
+        else if (should_rotate(b, len / 2 - n_pushes) == ROTATE_FLAG)
+            try_rab(b, a);
+        else if (should_rotate(b, len / 2 - n_pushes) == RROTATE_FLAG)
+            try_rrab(b, a);
+        else if (b->content[0] < b->pivot)
+            b->n_rotates += try_rab(b, a);
         else
         {
-            if (b->content[b->len - 1] > b->content[0])
-                rrb(b);
-            if (is_correct(b, b->len) && b->content[0] < lowest(a, a->len))
-                break ;
             if (a->content[0] == b->pivot && n_pushes != len / 2 - 1)
                 ra(a);
             n_pushes += pa(a, b);
         }
     }
-    if (a->content[1] == b->pivot)
+    if (a->len > 1 && a->content[1] == b->pivot)
         try_ss(a, b);
     put_on_top_b(a, b);
     return (n_pushes);
 }
 
-void    mutual_sort_a(t_stack *a, t_stack *b, int len)
+void    mutual_sort_a(t_stack *a, int len)
 {
     int n_pushes;
+    t_stack *b;
 
+    b = a->other_stack;
 	a->is_segmented = (a->len != len);
 	a->pivot = find_pivot(a, len);
     if (a->len <= 3)
         return (push_swap_3a(a));
-    if (len <= 2 || is_correct(a, a->len))
+    if (len <= 2 || fast_solution_check(a, len))
     {
-        if (len == 2 && !is_correct(a, 2))
+        if (len == 2 && a->content[0] > a->content[1])
             try_ss(a, b);
-        if (is_correct(b, b->len))
-        {
-            while (b->len)
-                pa(a, b);
-        }
         return ;
     }
     n_pushes = split_a(a, b, len);
-    mutual_sort_a(a, b, len - n_pushes);
-    mutual_sort_b(b, a, n_pushes);
+    mutual_sort_a(a, len - n_pushes);
+    mutual_sort_b(b, n_pushes);
 }
 
-void    mutual_sort_b(t_stack *b, t_stack *a, int len)
+void    mutual_sort_b(t_stack *b, int len)
 {
     int n_pushes;
+    t_stack *a;
 
+    a = b->other_stack;
 	b->is_segmented = (b->len != len);
 	b->pivot = find_pivot(b, len);
     if (b->len <= 3)
         return (push_swap_3b(a, b));
-    if (is_correct(a, a->len) && is_correct(b, b->len))
+    if (len <= 2 || fast_solution_check(b, len))
     {
-        while (b->len)
-            pa(a, b);
-        return ;
-    }
-    if (len <= 2 || is_correct(b, len))
-    {
-        if (len == 2 && !is_correct(b, 2))
+        if (len == 2 && b->content[0] < b->content[1])
             try_ss(b, a);
-        while (--len >= 0)
-            pa(a, b);
+        if (fast_solution_check(a, a->len))
+        {
+            while (len--)
+                pa(a, b);
+        }
         return ;
     }
     n_pushes = split_b(a, b, len);
-    mutual_sort_a(a, b, n_pushes);
-    mutual_sort_b(b, a, len - n_pushes);
+    mutual_sort_a(a, n_pushes);
+    mutual_sort_b(b, len - n_pushes);
 }

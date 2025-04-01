@@ -26,32 +26,32 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return (0);
 }
 
-void	apply_r(t_stack *a, t_stack *b, char *line)
+void	apply_rotate(t_stack *a, t_stack *b, char *line)
 {
 	if (ft_strcmp(line, "ra\n") == 0 || ft_strcmp(line, "rr\n") == 0)
-		r(a);
+		rotate(a);
 	if (ft_strcmp(line, "rb\n") == 0 || ft_strcmp(line, "rr\n") == 0)
-		r(b);
+		rotate(b);
 	if (ft_strcmp(line, "rra\n") == 0 || ft_strcmp(line, "rrr\n") == 0)
-		rr(a);
+		rrotate(a);
 	if (ft_strcmp(line, "rrb\n") == 0 || ft_strcmp(line, "rrr\n") == 0)
-		rr(b);
+		rrotate(b);
 }
 
-void	apply_p(t_stack *a, t_stack *b, char *line)
+void	apply_push(t_stack *a, t_stack *b, char *line)
 {
 	if (ft_strcmp(line, "pa\n") == 0)
-		p(a, b);
+		push(a, b);
 	else if (ft_strcmp(line, "pb\n") == 0)
-		p(b, a);
+		push(b, a);
 }
 
-void	apply_s(t_stack *a, t_stack *b, char *line)
+void	apply_swap(t_stack *a, t_stack *b, char *line)
 {
 	if (ft_strcmp(line, "sa\n") == 0 || ft_strcmp(line, "ss\n") == 0)
-		s(a);
+		swap(a);
 	if (ft_strcmp(line, "sb\n") == 0 || ft_strcmp(line, "ss\n") == 0)
-		s(b);
+		swap(b);
 }
 
 int	is_move_valid(char *line)

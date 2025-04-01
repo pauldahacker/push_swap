@@ -20,11 +20,11 @@ static void	apply_instructions(t_stack *a, t_stack *b)
 	if (!line)
 		return ;
 	if (is_move_valid(line) && line[0] == 'r')
-		apply_r(a, b, line);
+		apply_rotate(a, b, line);
 	else if (is_move_valid(line) && line[0] == 'p')
-		apply_p(a, b, line);
+		apply_push(a, b, line);
 	else if (is_move_valid(line) && line[0] == 's')
-		apply_s(a, b, line);
+		apply_swap(a, b, line);
 	else
 	{
 		destroy_stack(&a);
@@ -41,7 +41,7 @@ static void    checker(t_stack *a)
 
     b = init_stack(a->len, 0);
     apply_instructions(a, b);
-    if (is_correct(a, a->len, A))
+    if (is_correct(a, a->len))
 		write(1, "OK\n", 3);
 	else
 		write(1, "KO\n", 3);
@@ -54,7 +54,7 @@ int	main(int argc, char *argv[])
 
 	if (!argc || argc == 1)
 		return (0);
-	a = create_stack(argc - 1, argv + 1);
+	a = create_stack_A(argc - 1, argv + 1);
 	checker(a);
 	destroy_stack(&a);
 	return (0);

@@ -18,13 +18,8 @@ void	put_on_top_a(t_stack *a, t_stack *b)
 	{
 		if (b->content[b->len - 1] == a->pivot)
 			a->n_rotates += rrab(a, b);
-		while (a->n_rotates > 0)
+		while (a->n_rotates > 0 && !fast_solution_check(a, a->len))
 			a->n_rotates += rra(a);
-	}
-	if (a->n_rotates < 0)
-	{
-		while (a->n_rotates < 0)
-			a->n_rotates += ra(a);
 	}
 	if (b->len > 1 && b->content[b->len - 1] == a->pivot)
 		rrb(b);
@@ -36,13 +31,8 @@ void	put_on_top_b(t_stack *a, t_stack *b)
 	{
 		if (a->content[a->len - 1] == b->pivot)
 			b->n_rotates += rrab(b, a);
-		while (b->n_rotates > 0)
+		while (b->n_rotates > 0 && !fast_solution_check(b, b->len))
 			b->n_rotates += rrb(b);
-	}
-	if (b->n_rotates < 0)
-	{
-		while (b->n_rotates < 0)
-			b->n_rotates += rb(b);
 	}
 	if (a->len > 1 && a->content[a->len - 1] == b->pivot)
 		rra(a);
