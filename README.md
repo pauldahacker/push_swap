@@ -23,5 +23,5 @@ Algorithm is a remix of quicksort:
 CURRENT AVERAGE:
 
 - 100 NUMBERS: 626 moves
-- 
+
 - 500 NUMBERS: ~4800 moves
