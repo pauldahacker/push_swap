@@ -1,4 +1,4 @@
-Project finished (125).
+Project finished (125%).
 
 Sort a non-repeating stack of integers the most efficiently possible.
 
