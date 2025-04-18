@@ -100,7 +100,7 @@ int should_rotate(t_stack *stack, int pushes_left)
     int flag;
 
     flag = 0;
-    if (stack->len < 2)
+    if (stack->len < 2 )
         return (flag);
     rotate(stack);
     if ((stack->a_or_b == A && is_correct(stack, stack->len))
@@ -111,13 +111,13 @@ int should_rotate(t_stack *stack, int pushes_left)
     if (stack->a_or_b == A)
     {
         if (is_correct(stack, stack->len)
-            || (stack->content[0] <= stack->pivot))
+            || (stack->content[0] <= stack->pivot && stack->content[0] < stack->content[1]))
             flag = RROTATE_FLAG;
     }
     if (stack->a_or_b == B)
     {
         if (is_reverse_correct(stack, stack->len)
-            || (stack->content[0] >= stack->pivot))
+            || (stack->content[0] >= stack->pivot && stack->content[0] > stack->content[1]))
             flag = RROTATE_FLAG;
     }
     (void)pushes_left;
