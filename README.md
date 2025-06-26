@@ -121,7 +121,9 @@ We apply MUTUAL_SORT_A to A, using the length n as range:
   -> repeat until the range <= 1, or if a quick solution exists in this range. In this case, push the range on A.
 
 
-Example:
+**Example:**
+
+![Mutual sort algorithm](./assets/example01.png)
 
 [!] Does not pass NORMINETTE because i am trying to make it more efficient.
 
