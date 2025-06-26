@@ -47,9 +47,9 @@ int	find_pivot(t_stack *stack, int len)
 				++count;
 		}
         if (stack->len == 4 && count == 1)
-            break ;
-		if (stack->len != 4 && count == len / 2)
-			break ;
+        	break ;
+	if (stack->len != 4 && count == len / 2)
+		break ;
 	}
 	return (stack->content[i]);
 }
@@ -67,7 +67,7 @@ int	should_swap(t_stack *stack, int pushes_left)
 {
 	int	i;
 	int	pushable_count;
-    int flag;
+	int flag;
 
 	i = 0;
 	pushable_count = 0;
