@@ -97,38 +97,44 @@ We will have 2 separate sorting functions for A and B that work recursively and 
 
 We start with a number (n) of elements in stack A, and no elements in stack B.
 
-CORE LOGIC (modified to optimize further (there are quick solutions for small ranges, and thus can be used as base cases):
+BASIC LOGIC (modified in the code to optimize further):
 
-We apply MUTUAL_SORT_A to A, using the length n as range:
+We apply MUTUAL_SORT_A to A, **using the length n as range**:
 
+ **MUTUAL_SORT_A:**
+
+  -> if the range taken as argument is <= 2 or the numbers in this range are sorted, stop.
+  
   -> find the pivot p of stack A using the range taken as argument.
   
   -> push all numbers <= p onto stack B.
 
-  -> after pushing this smaller range of numbers, call MUTUAL_SORT_A on the remaining numbers in A in what is left of the original range used as argument.
+  -> after pushing this range of numbers, call MUTUAL_SORT_A to A on on what is left of the original range used as argument.
 
-  -> apply MUTUAL_SORT_B(*) to B using the range of numbers pushed as argument.
+  -> apply MUTUAL_SORT_B to B using the number of pushed elements as its range argument.
+
+**MUTUAL_SORT_B:**
   
-
-(*) MUTUAL_SORT_B:
+  -> if the range taken as argument is <= 2 or the numbers in B in this range are sorted, push the range of numbers on A and stop.
 
   -> find the pivot p of stack B using the range taken as argument.
 
   -> push all numbers >= p onto stack A.
 
-  -> after pushing this range of numbers, call MUTUAL_SORT_A using this range as argument
+  -> after pushing this range of numbers, call MUTUAL_SORT_A using the range as argument.
 
-  -> repeat until the range <= 1, or if a quick solution exists in this range. In this case, push the range on A.
-
+  -> apply MUTUAL_SORT_B to B using what is left of the original range as its range argument.
 
 **Example:**
 
 ![Mutual sort algorithm](./assets/example01.jpg)
 
+Lots of small optimization changes were made, I need to annotate them.
+
 [!] Does not pass NORMINETTE because i am trying to make it more efficient.
 
 CURRENT AVERAGE:
 
-- 100 NUMBERS: 626 moves
+- 100 NUMBERS: ~626 moves
 
 - 500 NUMBERS: ~4800 moves
