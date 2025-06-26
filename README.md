@@ -123,7 +123,7 @@ We apply MUTUAL_SORT_A to A, using the length n as range:
 
 **Example:**
 
-![Mutual sort algorithm](./assets/push_swap.png)
+![Mutual sort algorithm](./assets/example01.png)
 
 [!] Does not pass NORMINETTE because i am trying to make it more efficient.
 
