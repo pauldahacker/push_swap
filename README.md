@@ -127,7 +127,7 @@ We apply MUTUAL_SORT_A to A, **using the length n as range**:
 
 **Example:**
 
-![Mutual sort algorithm](./assets/example01.jpg)
+![Mutual sort example](./assets/example01.jpg)
 
 Lots of small optimization changes were made, I need to annotate them.
 
@@ -138,3 +138,10 @@ CURRENT AVERAGE:
 - 100 NUMBERS: ~626 moves
 
 - 500 NUMBERS: ~4800 moves
+
+**Bonus**
+
+Write a checker program that checks if a list of instructions successfully sorts a list on numbers.
+
+
+Grade: 125
