@@ -127,7 +127,7 @@ We apply MUTUAL_SORT_A to A, **using the length n as range**:
 
 **Example:**
 
-![Mutual sort example](./assets/example01.jpg)
+![Mutual sort example](./assets/example1.jpg)
 
 Lots of small optimization changes were made, I need to annotate them.
 
