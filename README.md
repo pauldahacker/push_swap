@@ -4,7 +4,7 @@ The PDF of the original subject is attached.
 
 -------------------------------------
 
-**The goal is to sort a non-repeating stack of integers the most efficiently possible using a set of limited operations, and the help of only one other stack.**
+<h3>The goal is to sort a non-repeating stack of integers the most efficiently possible using a set of limited operations, and the help of only one other stack.</h3>
 
 For minimal validation (which implies a minimum grade of 80), we must sort 100 random numbers in fewer than 700 operations.
 For maximum project validation and eligibility for bonuses, we must meet the first condition above and for 500 random numbers, there should be no more than 5500 operations.
@@ -65,7 +65,7 @@ The last element becomes the first one.
 
 -------------------------------------
 
-**My algorithm (inspired by quicksort):**
+<h2>My algorithm (inspired by quicksort):</h2>
 
 
 For a range of ints (len), we will have to introduce a pivot (p) that represents:
@@ -98,7 +98,7 @@ We will have 2 separate sorting functions for A and B that work recursively and 
 
 We start with a number (n) of elements in stack A, and no elements in stack B.
 
-BASIC LOGIC (modified in the code to optimize further):
+<h3>BASIC LOGIC (modified in the code to optimize further):</h3>
 
 We apply MUTUAL_SORT_A to A, **using the length n as range**:
 
@@ -134,7 +134,7 @@ We apply MUTUAL_SORT_A to A, **using the length n as range**:
 
 Lots of small optimization changes were made, I need to annotate them.
 
-[!] Does not pass NORMINETTE because i am trying to make it more efficient.
+[!] Does not pass NORMINETTE because i am trying to make it more efficient (some files have too many functions, some functions have too many lines).
 
 -------------------------------------
 
