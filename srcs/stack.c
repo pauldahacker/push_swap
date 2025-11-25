@@ -36,7 +36,7 @@ t_stack	*init_stack(int len, int a_or_b)
 	return (init);
 }
 
-t_stack	*create_stack_A(int len, char *argv[])
+t_stack	*create_stack_a(int len, char *argv[])
 {
 	int		i;
 	t_stack	*new_stack;

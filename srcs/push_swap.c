@@ -33,8 +33,7 @@ int	main(int argc, char *argv[])
 
 	if (!argc || argc == 1)
 		return (0);
-	a = create_stack_A(argc - 1, argv + 1);
-	// printf("is correct: %d\n", is_correct(a, a->len));
+	a = create_stack_a(argc - 1, argv + 1);
 	push_swap(a);
 	destroy_stack(&a);
 	return (0);

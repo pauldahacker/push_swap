@@ -34,11 +34,3 @@ void	push_swap_3b(t_stack *a, t_stack *b)
 		pa(a, b);
 	return ;
 }
-
-// void	push_swap_4a(t_stack *a, t_stack *b)
-// {
-// 	while (a->len != 3)
-// 	{
-		
-// 	}
-// }

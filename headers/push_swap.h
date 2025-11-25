@@ -29,7 +29,7 @@
 # define ROTATE_FLAG 1
 # define RROTATE_FLAG -1
 
-typedef struct s_stack t_stack;
+typedef struct s_stack	t_stack;
 typedef struct s_stack
 {
 	int		*content;
@@ -49,9 +49,9 @@ void	ss(t_stack *stack1, t_stack *stack2);
 void	try_ss(t_stack *stack1, t_stack *stack2);
 
 // push.c
-int	push(t_stack *stack1, t_stack *stack2);
-int	pa(t_stack *a, t_stack *b);
-int	pb(t_stack *b, t_stack *a);
+int		push(t_stack *stack1, t_stack *stack2);
+int		pa(t_stack *a, t_stack *b);
+int		pb(t_stack *b, t_stack *a);
 
 // rotate.c
 int		rotate(t_stack *stack);
@@ -76,12 +76,12 @@ void	help_create(char *numbers, t_stack *new_stack);
 
 // stack.c
 t_stack	*init_stack(int len, int a_or_b);
-t_stack	*create_stack_A(int len, char *argv[]);
+t_stack	*create_stack_a(int len, char *argv[]);
 int		lowest(int *stack_content, int len);
 int		highest(int *stack_content, int len);
 int		is_reverse_correct(t_stack *stack, int len);
 int		is_correct(t_stack *stack, int len);
-int	fast_solution_check(t_stack *stack, int len);
+int		fast_solution_check(t_stack *stack, int len);
 
 // small_sort.c
 void	push_swap_3a(t_stack *a);

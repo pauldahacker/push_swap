@@ -35,17 +35,17 @@ static void	apply_instructions(t_stack *a, t_stack *b)
 	apply_instructions(a, b);
 }
 
-static void    checker(t_stack *a)
+static void	checker(t_stack *a)
 {
-    t_stack	*b;
+	t_stack	*b;
 
-    b = init_stack(a->len, 0);
-    apply_instructions(a, b);
-    if (is_correct(a, a->len))
+	b = init_stack(a->len, 0);
+	apply_instructions(a, b);
+	if (is_correct(a, a->len))
 		write(1, "OK\n", 3);
 	else
 		write(1, "KO\n", 3);
-    destroy_stack(&b);
+	destroy_stack(&b);
 }
 
 int	main(int argc, char *argv[])
@@ -54,7 +54,7 @@ int	main(int argc, char *argv[])
 
 	if (!argc || argc == 1)
 		return (0);
-	a = create_stack_A(argc - 1, argv + 1);
+	a = create_stack_a(argc - 1, argv + 1);
 	checker(a);
 	destroy_stack(&a);
 	return (0);
