@@ -1,4 +1,4 @@
-**push_swap is part of the second milestone of the 42 Common Core**
+<h1>**push_swap is part of the second milestone of the 42 Common Core**</h1>
 
 The PDF of the original subject is attached.
 
@@ -59,12 +59,10 @@ The last element becomes the first one.
 
 **rrr** : rra and rrb at the same time.
 
-
+-------------------------------------
 
 **My algorithm (inspired by quicksort):**
 
-
--------------------------------------
 
 For a range of ints (len), we will have to introduce a pivot (p) that represents:
 
@@ -91,7 +89,6 @@ If B has {6,5,4,3,2,1}, its length is 6.
 
 For the range n = 6, the pivot would be p = 4 because n is pair and there are 6/2 = 3 elements in B that are less than 4 (the set {3,2,1}).
 
--------------------------------------
 
 We will have 2 separate sorting functions for A and B that work recursively and mutually: mutual_sort_a, and mutual_sort_b. Both of them take a stack, and a number representing the range we want to sort.
 
@@ -125,6 +122,8 @@ We apply MUTUAL_SORT_A to A, **using the length n as range**:
 
   -> apply MUTUAL_SORT_B to B using what is left of the original range as its range argument.
 
+-------------------------------------
+
 **Example:**
 
 ![Mutual sort example](./assets/example1.jpg)
@@ -133,11 +132,15 @@ Lots of small optimization changes were made, I need to annotate them.
 
 [!] Does not pass NORMINETTE because i am trying to make it more efficient.
 
+-------------------------------------
+
 CURRENT AVERAGE:
 
 - 100 NUMBERS: ~626 moves
 
 - 500 NUMBERS: ~4800 moves
+
+-------------------------------------
 
 **Bonus**
 
