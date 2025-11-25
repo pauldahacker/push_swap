@@ -1,6 +1,8 @@
 <h1>push_swap is part of the second milestone of the 42 Common Core</h1>
 
-<h4>The PDF of the original subject is attached.</h4>
+The PDF of the original subject is attached.
+
+-------------------------------------
 
 **The goal is to sort a non-repeating stack of integers the most efficiently possible using a set of limited operations, and the help of only one other stack.**
 
@@ -8,6 +10,8 @@ For minimal validation (which implies a minimum grade of 80), we must sort 100 r
 For maximum project validation and eligibility for bonuses, we must meet the first condition above and for 500 random numbers, there should be no more than 5500 operations.
 
 I enjoyed this project and spent a lot of time trying to optimize it, and still doing so...
+
+-------------------------------------
 
 The available operations are:
 
