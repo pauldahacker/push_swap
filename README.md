@@ -1,8 +1,8 @@
-<h1>**push_swap is part of the second milestone of the 42 Common Core**</h1>
+<h1>push_swap is part of the second milestone of the 42 Common Core</h1>
 
-The PDF of the original subject is attached.
+<h4>The PDF of the original subject is attached.</h4>
 
-The goal is to sort a non-repeating stack of integers the most efficiently possible using a set of limited operations, and the help of only one other stack.
+**The goal is to sort a non-repeating stack of integers the most efficiently possible using a set of limited operations, and the help of only one other stack.**
 
 For minimal validation (which implies a minimum grade of 80), we must sort 100 random numbers in fewer than 700 operations.
 For maximum project validation and eligibility for bonuses, we must meet the first condition above and for 500 random numbers, there should be no more than 5500 operations.
